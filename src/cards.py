@@ -3,26 +3,27 @@ import random
 
 
 class Suit(Enum):
-    CLUB = "Club"
-    DIAMOND = "Diamond"
-    HEART = "Heart"
-    SPADE = "Spade"
+    CLUB = 0
+    DIAMOND = 1
+    HEART = 2
+    SPADE = 3
 
 
 class Rank(Enum):
-    ACE = "Ace"
-    KING = "King"
-    QUEEN = "Queen"
-    JACK = "Jack"
-    TEN = "Ten"
-    NINE = "Nine"
-    EIGHT = "Eight"
-    SEVEN = "Seven"
-    SIX = "Six"
-    FIVE = "Five"
-    FOUR = "Four"
-    THREE = "Three"
-    TWO = "Two"
+    ACE = 14
+    KING = 13
+    QUEEN = 12
+    JACK = 11
+    TEN = 10
+    NINE = 9
+    EIGHT = 8
+    SEVEN = 7
+    SIX = 6
+    FIVE = 5
+    FOUR = 4
+    THREE = 3
+    TWO = 2
+    ACE_LOW = 1
 
 
 class Card():
@@ -34,7 +35,7 @@ class Card():
         return self.suit == o.suit and self.rank == o.rank
 
     def __repr__(self):
-        print(f"{self.rank.value} of {self.suit.value}s")
+        return f"{self.rank.value} of {self.suit.name}s"
 
 
 class Deck():
@@ -43,6 +44,8 @@ class Deck():
         self.burned = []
         for s in Suit:
             for r in Rank:
+                if r == Rank.ACE_LOW:
+                    continue
                 self.cards.append(Card(s, r))
 
     def shuffle(self):
