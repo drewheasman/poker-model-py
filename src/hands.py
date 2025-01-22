@@ -4,7 +4,7 @@ from enum import Enum
 from cards import Card, Suit, Rank
 
 
-class HandTypes(Enum):
+class HandType(Enum):
     ROYAL_FLUSH = "Royal flush"
     STRAIGHT_FLUSH = "straight flush"
     FOUR_OF_A_KIND = "four of a kind"
@@ -17,46 +17,78 @@ class HandTypes(Enum):
     HIGH_CARD = "high card"
 
 
-def best_hand(cards: List[Card]):
+def best_hand(cards: List[Card]) -> (HandType, List[Card]):
     matching_hand = check_royal_flush(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        return (
+            HandType.ROYAL_FLUSH,
+            matching_hand
+        )
 
     matching_hand = check_straight_flush(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        return (
+            HandType.STRAIGHT_FLUSH, matching_hand
+        )
 
     matching_hand = check_four_of_a_kind(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        remaining = [c for c in cards if c not in matching_hand]
+        return (
+            HandType.FOUR_OF_A_KIND,
+            matching_hand + highest_cards(remaining, 1)
+        )
 
     matching_hand = check_full_house(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        return (
+            HandType.FULL_HOUSE,
+            matching_hand
+        )
 
     matching_hand = check_flush(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        return (
+            HandType.FLUSH,
+            matching_hand
+        )
 
     matching_hand = check_straight(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        return (
+            HandType.STRAIGHT,
+            matching_hand
+        )
 
     matching_hand = check_three_of_a_kind(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        remaining = [c for c in cards if c not in matching_hand]
+        return (
+            HandType.THREE_OF_A_KIND,
+            matching_hand + highest_cards(remaining, 2)
+        )
 
     matching_hand = check_two_pair(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        remaining = [c for c in cards if c not in matching_hand]
+        return (
+            HandType.TWO_PAIR,
+            matching_hand + highest_cards(remaining)
+        )
 
     matching_hand = check_pair(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        remaining = [c for c in cards if c not in matching_hand]
+        return (
+            HandType.PAIR,
+            matching_hand + highest_cards(remaining, 3)
+        )
 
     matching_hand = highest_cards(cards)
     if len(matching_hand) > 0:
-        return matching_hand
+        return (HandType.HIGH_CARD, matching_hand)
+
+    return (None, [])
 
 
 def check_royal_flush(cards: List[Card]):
@@ -66,8 +98,6 @@ def check_royal_flush(cards: List[Card]):
         return royal_cards
 
     return []
-
-    tested_cards = check_royal_flush(cards)
 
 
 def check_straight_flush(cards: List[Card]):
@@ -82,11 +112,24 @@ def check_straight_flush(cards: List[Card]):
 
 
 def check_four_of_a_kind(cards: List[Card]):
-    pass
+    return check_of_a_kind(4, cards)
 
 
 def check_full_house(cards: List[Card]):
-    pass
+    cards_to_check = cards.copy()
+
+    three_of_a_kind = check_of_a_kind(3, cards_to_check)
+    if len(three_of_a_kind) != 3:
+        return []
+
+    cards_to_check = [c for c in cards_to_check if c not in three_of_a_kind]
+
+    pair = check_of_a_kind(2, cards_to_check)
+    if len(pair) != 2:
+        return []
+
+    full_house = three_of_a_kind + pair
+    return full_house
 
 
 def check_flush(cards: List[Card]):
@@ -124,20 +167,48 @@ def check_straight(cards: List[Card]):
 
 
 def check_three_of_a_kind(cards: List[Card]):
-    pass
+    return check_of_a_kind(3, cards)
 
 
 def check_two_pair(cards: List[Card]):
-    pass
+    cards_to_check = cards.copy()
+
+    first_pair = check_of_a_kind(2, cards_to_check)
+    if len(first_pair) != 2:
+        return []
+
+    cards_to_check = [c for c in cards_to_check if c not in first_pair]
+
+    second_pair = check_of_a_kind(2, cards_to_check)
+    if len(second_pair) != 2:
+        return []
+
+    pairs = first_pair + second_pair
+    return pairs
 
 
 def check_pair(cards: List[Card]):
-    pass
+    return check_of_a_kind(2, cards)
 
 
-def highest_cards(cards: List[Card]):
+def highest_cards(cards: List[Card], num=5):
     ranked_cards = cards.copy()
     ranked_cards.sort(key=lambda c: c.rank.value, reverse=True)
-    if len(ranked_cards) > 5:
-        return ranked_cards[:5]
+    if len(ranked_cards) > num:
+        return ranked_cards[:num]
     return ranked_cards
+
+
+def check_of_a_kind(of: int, cards: List[Card]):
+    cards_to_check = cards.copy()
+    cards_to_check.sort(key=lambda c: c.rank.value)
+    counts = {}
+    while len(cards_to_check) > 0:
+        c: Card = cards_to_check.pop()
+        if c.rank not in counts:
+            counts[c.rank] = []
+        counts[c.rank].append(c)
+        if len(counts[c.rank]) == of:
+            return counts[c.rank]
+
+    return []

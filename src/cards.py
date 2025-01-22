@@ -37,6 +37,9 @@ class Card():
     def __repr__(self):
         return f"{self.rank.value} of {self.suit.name}s"
 
+    def __hash__(self):
+        return hash((self.suit, self.rank))
+
 
 class Deck():
     def __init__(self):
