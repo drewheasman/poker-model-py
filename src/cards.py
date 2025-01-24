@@ -59,3 +59,13 @@ class Deck():
 
     def burn(self):
         self.burned.append(self.cards.pop())
+
+    def return_cards(self, cards):
+        for _ in range(len(cards)):
+            self.cards.append(cards.pop())
+
+    def return_burned(self):
+        for _ in range(len(self.burned)):
+            self.cards.append(self.burned.pop())
+
+        assert len(self.burned) == 0

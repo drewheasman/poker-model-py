@@ -5,16 +5,16 @@ from cards import Card, Suit, Rank
 
 
 class HandType(Enum):
-    ROYAL_FLUSH = "Royal flush"
-    STRAIGHT_FLUSH = "straight flush"
-    FOUR_OF_A_KIND = "four of a kind"
-    FULL_HOUSE = "full house"
-    FLUSH = "flush"
-    STRAIGHT = "straight"
-    THREE_OF_A_KIND = "three of a kind"
-    TWO_PAIR = "two pair"
-    PAIR = "pair"
-    HIGH_CARD = "high card"
+    ROYAL_FLUSH = 0
+    STRAIGHT_FLUSH = 1
+    FOUR_OF_A_KIND = 2
+    FULL_HOUSE = 3
+    FLUSH = 4
+    STRAIGHT = 5
+    THREE_OF_A_KIND = 6
+    TWO_PAIR = 7
+    PAIR = 8
+    HIGH_CARD = 9
 
 
 def best_hand(cards: List[Card]) -> (HandType, List[Card]):
@@ -73,7 +73,7 @@ def best_hand(cards: List[Card]) -> (HandType, List[Card]):
         remaining = [c for c in cards if c not in matching_hand]
         return (
             HandType.TWO_PAIR,
-            matching_hand + highest_cards(remaining)
+            matching_hand + highest_cards(remaining, 1)
         )
 
     matching_hand = check_pair(cards)

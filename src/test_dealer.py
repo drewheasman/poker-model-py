@@ -1,6 +1,7 @@
 import unittest
 from dealer import Dealer
 from cards import Deck
+from player import Player
 
 
 class TestDealer(unittest.TestCase):
@@ -54,6 +55,16 @@ class TestDealer(unittest.TestCase):
         dealer.deal_flop()
         with self.assertRaises(AssertionError):
             dealer.deal_river()
+
+    def test_retrieve_player_cards(self):
+        dealer = Dealer()
+        players = [
+            Player("Player1"),
+            Player("Player2"),
+        ]
+        dealer.deal_to_players(players)
+        dealer.retrieve_player_cards(players)
+        self.assertEqual(52, len(dealer.deck.cards))
 
 
 if __name__ == "__main__":

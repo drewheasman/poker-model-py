@@ -7,11 +7,11 @@ class Player():
         self.name = name
         self.cards: List[Card] = []
 
-    def take_card(self, card: Card):
-        assert (len(self.cards) < 2)
+    def give_card(self, card: Card):
+        assert len(self.cards) < 2
         self.cards.append(card)
 
-    def return_cards(self):
+    def retrieve_cards(self):
         to_return = self.cards.copy()
         self.cards = []
         return to_return

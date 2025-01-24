@@ -27,6 +27,17 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(51, len(d.cards))
         self.assertFalse(drawn in d.cards)
 
+    def test_deck_return_cards(self):
+        d = Deck()
+        drawn = [d.draw()]
+        drawn.append(d.draw())
+        drawn.append(d.draw())
+        self.assertEqual(3, len(drawn))
+        self.assertEqual(49,  len(d.cards))
+
+        d.return_cards(drawn)
+        self.assertEqual(52,  len(d.cards))
+
 
 if __name__ == "__main__":
     unittest.main()

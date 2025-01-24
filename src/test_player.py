@@ -12,28 +12,28 @@ class TestPlayer(unittest.TestCase):
         player = Player("Jimbob")
         deck = Deck()
 
-        player.take_card(deck.draw())
+        player.give_card(deck.draw())
         self.assertEqual(1, len(player.cards))
 
-        player.take_card(deck.draw())
+        player.give_card(deck.draw())
         self.assertEqual(2, len(player.cards))
 
         with self.assertRaises(AssertionError):
-            player.take_card(deck.draw())
+            player.give_card(deck.draw())
 
     def test_player_return_cards(self):
         player = Player("Jimbob")
         deck = Deck()
 
-        self.assertEqual(0, len(player.return_cards()))
+        self.assertEqual(0, len(player.retrieve_cards()))
 
-        player.take_card(deck.draw())
-        self.assertEqual(1, len(player.return_cards()))
+        player.give_card(deck.draw())
+        self.assertEqual(1, len(player.retrieve_cards()))
         self.assertEqual(0, len(player.cards))
 
-        player.take_card(deck.draw())
-        player.take_card(deck.draw())
-        self.assertEqual(2, len(player.return_cards()))
+        player.give_card(deck.draw())
+        player.give_card(deck.draw())
+        self.assertEqual(2, len(player.retrieve_cards()))
         self.assertEqual(0, len(player.cards))
 
 
